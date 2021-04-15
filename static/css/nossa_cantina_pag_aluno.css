@@ -1,0 +1,66 @@
+body, html { overflow-x:hidden; }
+
+#id_valor{
+    background-color: lightgray;
+    width: 80%;
+    margin: 3%;
+    text-align: center;
+    -webkit-appearance: none;
+    -moz-appearance:textfield;
+}
+
+#mensagens{
+    background-color: gray;
+    height: 40%;
+    position: absolute;
+    bottom: 0;
+    left: 5%;
+    right: 5%;
+    overflow: auto;
+}
+
+.notification-badge {
+    position:relative;
+    padding:5px 9px;
+    background-color: #fff;
+    color: #941e1e;
+    bottom: 15px;
+    left: 15px;
+    border-radius: 50%;
+}
+
+.bt_excluir{
+    position: absolute; 
+    transform: translate(220%, -100%);
+}
+
+.square {
+    max-width: 100%;
+    max-height: 100%;
+    margin-top: 10%;
+    position: relative;
+}
+
+.square::after {
+    content: "";
+    display: block;
+    padding-bottom: 100%;
+}
+
+.img_input:hover {
+    cursor: pointer;
+    opacity: 0.3;
+}
+
+.img_img_input{
+    position: absolute;
+    width: 65%;
+    height: 65%;
+    bottom: 0;
+    right: 0;
+    display: none;
+    color: black;
+}
+.img_input:hover .img_img_input{
+    display: block;
+}

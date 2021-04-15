@@ -1,0 +1,200 @@
+{% extends 'cantina/header.html' %}
+{% load materializecss %}
+
+{% block body_style %}<body style="background-image: url(/static/img/fundo/{% get_rand %}.jpg); background-size: cover;">{% endblock %}
+
+{% block nav %}
+   <ul class="left">
+      <li><a href="/"><i class="material-icons">keyboard_backspace</i></a></li>
+   </ul>
+{% endblock %}
+
+{% block body %}
+   <div class="valign-wrapper" style="width:100%; height:100%; position: absolute; top:0px;">
+      <div class="container">
+         <div class="row">
+            <div class="col s12 m6 offset-m3">
+               <div class="card">
+                  <div class="card-action valign-wrapper center-align" style="padding: 0px 0px;">
+                     <a id='alun_' class="col s6" onclick="aluno()" id='aluno' style="cursor: pointer; margin: 0;padding: 16px;">Aluno</a>
+                     <a id='esco_' class="col s6 grey lighten-2"  onclick="escola()" id='escola'style="cursor: pointer; margin: 0;padding: 16px;">Escola</a>
+                  </div>
+
+                  <!-- entrar aluno -->
+                  <div class="card-content" id='aluno_entrar'>                           
+                     <span class="card-title black-text">Entrar</span>
+                     <form id='ent_alu' action="entrar" method="POST">
+                        {% csrf_token %}
+                        <div class="row">
+                           {{ entalu|materializecss }}
+                        </div>
+                     </form>
+                     <a href="/refazer_senha" class="right-align" style="width: 100%;display: inline-block;">Esqueceu a sua senha?</a>
+                  </div>
+
+                  <!-- cadastrar aluno -->
+                  <div class="card-content" id='aluno_cadastrar' style="display: none;">                           
+                     <span class="card-title black-text">Cadastrar</span>
+                     <form id='cad_alu' action="entrar" method="POST" autocomplete="off">
+                        {% csrf_token %}
+                        <div class="row">
+                           {{ cadalu|materializecss }}
+                           <datalist id="escolas">
+                              {% for i in escola|get_sort:"nome" %}
+                              <option value="{{ i }}">
+                              {% endfor %}
+                            </datalist>
+                        </div>
+                     </form>
+                  </div>
+                  
+                  <div id='alu' class="card-action">
+                     <input onclick="inf_aluno()" id='cadastrar' type="submit" class="btn amber accent-4" value="Cadastrar">
+
+                     <input form='ent_alu' id='alu_ent_bt' name="alu_ent_bt" type="submit" class="btn right amber accent-4" value="Seguir">
+                     <input form='cad_alu' id='alu_cad_bt' name="alu_cad_bt" type="submit" class="btn right amber accent-4" value="Cadastrar" style="display: none;">
+                  </div>
+
+                  <!-- entrar escola -->
+                  <div class="card-content" id='escola_entrar' style="display: none;">                           
+                     <span class="card-title black-text">Entrar</span>
+                     <form id='ent_esc' action='entrar' method="POST">
+                        {% csrf_token %}
+                        <div class="row">
+                           {{ entesc|materializecss }}
+                        </div>
+                     </form>
+                     <a href="/refazer_senha" class="right-align" style="width: 100%;display: inline-block;">Esqueceu a sua senha?</a>
+                  </div>
+
+                  <!-- cadastrar escola -->
+                  <div class="card-content" id='escola_cadastrar' style="display: none;">                           
+                     <span class="card-title black-text">Cadastrar</span>
+                     <form id='cad_esc' action="entrar" method="POST" autocomplete="off">
+                        {% csrf_token %}
+                        <div class="row">
+                           {{ cadesc|materializecss }}
+                        </div>
+                     </form>
+                  </div>
+
+                  <div id='esc' class="card-action" style="display: none;">
+                     <input onclick="inf_escola()" id='cadastrar_esc' type="submit" class="btn amber accent-4" value="Cadastrar">
+
+                     <input form='ent_esc' id='esc_ent_bt' name="esc_ent_bt" type="submit" class="btn right amber accent-4" value="Seguir">
+                     <input form='cad_esc' id='esc_cad_bt' name="esc_cad_bt" type="submit" class="btn right amber accent-4" value="Cadastrar" style="display: none;">
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+
+   <script>
+      $(document).ready(function(){
+         $('select').formSelect();
+      });
+
+      var a = '0';
+      function inf_aluno(){
+         if (a=='0'){
+            document.getElementById('aluno_entrar').style.display='none';
+            document.getElementById('aluno_cadastrar').style.display='block';
+            document.getElementById('cadastrar').value='Entrar';
+            document.getElementById('alu_ent_bt').style.display='none';
+            document.getElementById('alu_cad_bt').style.display='block';
+            a='1';
+            localStorage.setItem('a', a);
+         }
+         else{
+            document.getElementById('aluno_entrar').style.display='block';
+            document.getElementById('aluno_cadastrar').style.display='none';
+            document.getElementById('cadastrar').value='Cadastrar';
+            document.getElementById('alu_ent_bt').style.display='block';
+            document.getElementById('alu_cad_bt').style.display='none';
+            a='0';
+            localStorage.setItem('a', a);
+         }
+      }
+      document.getElementById('')
+      function inf_escola(){
+         if (a=='0'){
+            document.getElementById('escola_entrar').style.display='none';
+            document.getElementById('escola_cadastrar').style.display='block';
+            document.getElementById('cadastrar_esc').value='Entrar';
+            document.getElementById('esc_ent_bt').style.display='none';
+            document.getElementById('esc_cad_bt').style.display='block';
+            a='1';
+            localStorage.setItem('a', a);
+         }
+         else{
+            document.getElementById('escola_entrar').style.display='block';
+            document.getElementById('escola_cadastrar').style.display='none';
+            document.getElementById('cadastrar_esc').value='Cadastrar';
+            document.getElementById('esc_ent_bt').style.display='block';
+            document.getElementById('esc_cad_bt').style.display='none';
+            a='0';
+            localStorage.setItem('a', a);
+         }
+      }
+      function aluno(){
+         document.getElementById('escola_entrar').style.display='none';
+         document.getElementById('escola_cadastrar').style.display='none';
+         document.getElementById('esc').style.display='none';
+         document.getElementById('esco_').classList.add("grey","lighten-2");
+         
+         document.getElementById('alu').style.display='block';
+         document.getElementById('alun_').classList.remove('grey','lighten-2');
+         localStorage.setItem('es', '0');
+         if (a=='0'){
+            document.getElementById('aluno_entrar').style.display='block';
+            document.getElementById('cadastrar_esc').value='Cadastrar';
+            document.getElementById('cadastrar').value='Cadastrar';
+            document.getElementById('alu_ent_bt').style.display='block';
+            document.getElementById('alu_cad_bt').style.display='none';
+         }
+         else{
+            document.getElementById('aluno_cadastrar').style.display='block';
+            document.getElementById('aluno_entrar').style.display='none';   
+            document.getElementById('cadastrar').value='Entrar';
+            document.getElementById('cadastrar_esc').value='Entrar';      
+            document.getElementById('alu_ent_bt').style.display='none';
+            document.getElementById('alu_cad_bt').style.display='block';
+         }
+      }
+      function escola(){
+         document.getElementById('aluno_entrar').style.display='none';
+         document.getElementById('aluno_cadastrar').style.display='none';
+         document.getElementById('alu').style.display='none';
+         document.getElementById('alun_').classList.add('grey','lighten-2');
+         
+         document.getElementById('esc').style.display='block';
+         document.getElementById('esco_').classList.remove("grey","lighten-2");
+         localStorage.setItem('es', '1');
+         if (a=='0'){
+            document.getElementById('escola_entrar').style.display='block';
+            document.getElementById('cadastrar_esc').value='Cadastrar';
+            document.getElementById('cadastrar').value='Cadastrar';
+            document.getElementById('esc_ent_bt').style.display='block';
+            document.getElementById('esc_cad_bt').style.display='none';
+         }
+         else{
+            document.getElementById('escola_cadastrar').style.display='block';
+            document.getElementById('cadastrar').value='Entrar';
+            document.getElementById('cadastrar_esc').value='Entrar';
+            document.getElementById('esc_ent_bt').style.display='none';
+            document.getElementById('esc_cad_bt').style.display='block';
+         }
+      }
+      if (localStorage.getItem("es")=='0'){
+         a=localStorage.getItem("a");
+         aluno();
+      }
+      else if (localStorage.getItem("es")=='1'){
+         a=localStorage.getItem("a");
+         escola();
+      }
+
+      document.getElementById('id_ca_escola').setAttribute('list','escolas');
+   </script>
+{% endblock %}

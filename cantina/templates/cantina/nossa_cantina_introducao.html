@@ -1,0 +1,107 @@
+{% extends 'cantina/header.html' %}
+
+{% block nav %}
+    <ul class="right">
+        <li><a href="/entrar" style="display: flex;">ENTRAR<i class="material-icons">login</i></a></li>                    
+    </ul>
+{% endblock %}
+
+{% block body %}
+    <div class="amber" style="width: 100%; background-image: linear-gradient(rgba(0,0,0,0), rgb(255, 255, 255)), url(/static/img/fundo/{% get_rand %}.jpg); background-size: cover;">
+        <h1 class="center-align" style="margin: 0px; padding:160px;">BEM-VINDO À NOSSA CANTINA</h1>
+    </div>
+
+    <div class="row center valign-wrapper" style="width: 100%; margin:0px">
+        <a id="p_alunos" onclick="trocar('a')" class="col s6 amber accent-2" href="#" style="padding:25px; color:black;"><strong>PARA OS ALUNOS</strong></a>
+        <a id="p_escolas" onclick="trocar('e')" class="col s6" href="#" style="padding:25px; color:black;"><strong>PARA AS ESCOLAS</strong></a>
+    </div>
+    <!-- abas -->      <!-- -webkit-text-stroke: 2px black; -->
+    <div id="alunos">
+        <!-- 1 -->
+        <div class="row amber accent-2 valign-wrapper" style="width: 100%; margin:0px;">
+            <h3 class="col l6" style="margin: 0px; padding-left: 100px;">
+                O site Nossa Cantina tem o objetivo de facilitar e agilizar a compra de itens das cantinas escolares para os alunos
+            </h3>
+            <img class="col l6" src="/static/img/introducao/1.png" style="padding:80px;">
+        </div>
+        <!-- 2 -->
+        <div class="row amber accent-1 valign-wrapper" style="width: 100%; margin:0px;">
+            <img class="col l6" src="/static/img/introducao/2.png" style="padding:80px;">
+            <h3 class="col l6" style="margin: 0px; padding-left: 100px;">
+                Veja  os teus itens e o total antes de pagar
+            </h3>            
+        </div>
+        <!-- 3 -->
+        <div class="row amber accent-2 valign-wrapper" style="width: 100%; margin:0px;">
+            <h3 class="col l6" style="margin: 0px; padding-left: 100px;">
+                Veja os pedidos que você  ainda tem para retirar
+            </h3>
+            <img class="col l6" src="/static/img/introducao/3.png" style="padding:80px;">
+        </div>
+        <!-- 4 -->
+        <div class="row amber accent-1 valign-wrapper" style="width: 100%; margin:0px;">
+            <img class="col l6" src="/static/img/introducao/4.png" style="padding:10px 60px; max-height:560px; max-width:350px; margin:auto;">
+            <h3 class="col l6" style="margin: 0px; padding-left: 100px;">
+                Personalize seu perfil e veja mensagens e avisos da escola
+            </h3>            
+        </div>
+    </div>
+
+    <div id="escolas" style="display: none;">
+        <!-- 1 -->
+        <div class="row amber accent-2 valign-wrapper" style="width: 100%; margin:0px;">
+            <img class="col l6" src="/static/img/introducao/01.png" style="padding:80px;">
+            <h3 class="col l6" style="margin: 0px; padding-left: 100px;">
+                O site Nossa Cantina tem o objetivo de facilitar e agilizar a venda de itens das cantinas para as escolas
+            </h3>
+        </div>
+        <!-- 2 -->
+        <div class="row amber accent-1 valign-wrapper" style="width: 100%; margin:0px;">
+            <h3 class="col l6" style="margin: 0px; padding-left: 100px;">
+                Adicione novos itens ao menu ou altere os existentes com facilidade
+            </h3>      
+            <img class="col l6" src="/static/img/introducao/02.png" style="padding:80px;">
+        </div>
+        <!-- 3 -->
+        <div class="row amber accent-2 valign-wrapper" style="width: 100%; margin:0px;">
+            <img class="col l6" src="/static/img/introducao/03.png" style="padding:80px;">
+            <h3 class="col l6" style="margin: 0px; padding-left: 100px;">
+                Veja todos os pedidos dos alunos separados por horário para não haver confusões e também os pedidos já entregues caso haja nessecidade de checar
+            </h3>            
+        </div>
+        <!-- 4 -->
+        <div class="row amber accent-1 valign-wrapper" style="width: 100%; margin:0px;">            
+            <h3 class="col l6" style="margin: 0px; padding-left: 100px;">
+                Personalize seu perfil e mande mensagens e avisos para todos os alunos através do site
+            </h3>    
+            <img class="col l6" src="/static/img/introducao/04.png" style="padding:10px 60px; max-height:560px; max-width:350px; margin:auto;">
+        </div>
+    </div>
+
+    <!-- rodapé -->
+    <div class="amber accent-4" style="display: inline-flex; width:100%; height:200px">
+        <h4 style="margin: auto;">Feito utilizando:</h4>
+        <a href="https://www.djangoproject.com/" title="Django" target="_blank" style="margin: auto;">
+            <img src="/static/img/introducao/django.png" alt="Django" style="max-width: 200px;">
+        </a>
+        <a href="https://materializecss.com/" title="Materialize" target="_blank" style="margin: auto;">
+            <img src="/static/img/introducao/materialize.png" alt="Materialize" style="max-width: 200px;">
+        </a>
+    </div>
+
+    <script>
+        function trocar(x){
+            document.getElementById('alunos').style.display = (x=='e' ? 'none' : '')
+            document.getElementById('escolas').style.display = (x=='e' ? '' : 'none')
+
+            if (x=='a'){
+                document.getElementById('p_alunos').classList.add('amber','accent-2')
+                document.getElementById('p_escolas').classList.remove('amber','accent-2')
+            }
+            else {
+                document.getElementById('p_escolas').classList.add('amber','accent-2')
+                document.getElementById('p_alunos').classList.remove('amber','accent-2')
+            }
+        }
+    </script>
+{% endblock %}

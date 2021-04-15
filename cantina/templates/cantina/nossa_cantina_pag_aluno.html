@@ -1,0 +1,271 @@
+{% extends 'cantina/header.html' %}
+{% load static %}
+
+{% block css %}<link rel="stylesheet" href="{% static 'css/nossa_cantina_pag_aluno.css' %}">{% endblock %}
+
+{% block nav %}
+    <ul id="dropdown1" class="dropdown-content">
+        <li><a href="/sair">Sair</a></li>
+    </ul>
+
+    <ul id="nav-mobile" class="right hide-on-small-only">
+        <!-- <li><a class="modal-trigger" href="#" data-target="dinheiro"><i class="material-icons" title="Adicionar dinheiro">payments</i></a></li> -->
+        <li><a class="modal-trigger" href="#" data-target="meus_pedidos"><i class="material-icons" title="Meus pedidos">fastfood</i></a></li>
+        <li>
+            <a class="modal-trigger" href="#" data-target="pedidos" title="Pedidos">
+                <i class="material-icons" style="position: absolute;">shopping_basket</i>
+                <small id='cesta' class="notification-badge">0</small>
+            </a>
+        </li>
+        <li><a class="dropdown-trigger" href="#!" data-target="dropdown1"><i class="material-icons">settings</i></a></li>                    
+    </ul>  
+{% endblock %}
+
+{% block body %}
+    <div id="pedidos" class="modal">
+        <div class="modal-content">
+            <h4 class="center">Pedidos</h4> 
+            <form id="pedidos_form" action="aluno" method="post" style="display:none; margin:0;">{% csrf_token %}
+                <input id="pedidos_form_nomes" type="hidden" name="nomes">
+                <input id="pedidos_form_total" type="hidden" name="total">
+                <input type="hidden" name="pedido">
+            </form>
+            <ul id='pedidos_cesta' style="background-color: lightgray;padding: 2%; overflow: auto; max-height: calc(100vh - 480px);">
+                <h5 id="pedidos_vazio" class="center">Sua cesta está vazia</h5>
+            </ul>
+            <h4 id="total_erro" class="center" style="color: red;"></h4>
+        </div>
+        <div class="modal-footer" style="position: relative;">
+            <h4 id="pedidos_total" class="left" style="position:absolute; bottom:10%; left:2%;"></h4>
+            <button id="pedidos_confirmar" class="btn waves-effect waves-green green accent-4" onclick="env_pedido()" style="display: none;">Confirmar</button>
+        </div>
+    </div>
+
+    <!-- <div id="dinheiro" class="modal">
+        <div class="modal-content center">
+            <h4>Introduza um valor para adiçionar a sua conta</h4>
+            <form id="din" action="aluno" method="post" autocomplete="off">
+                {% csrf_token %}
+                {{ dinheiro.valor }}
+            </form>
+            <button form='din' class="btn waves-effect waves-green green accent-4">Adicionar</button>
+        </div>
+    </div> -->
+
+    <div id="meus_pedidos" class="modal">
+        <div class="modal-content center">
+            <h2 id="meus_pedidos_nada" style="margin: 10;">Não há pedidos para retirar</h2>
+            <div id="meus_pedidos_itens">
+            {% for i in pedidos %}
+                {% if not i.entregue %}
+                    <div class="valign-wrapper" style="display: flex; margin:0px; background-color: #eee;padding: 10px; margin: 10px 0px;">
+                        <img src="{{ i.aluno.imagem.url }}" style="height:60px; width:60px; border-radius:50%; padding:0.2%; object-fit:contain; background-color:white;">
+                        <h5 class="truncate" style="margin-left: 1%;width: 20%;">{{ i.aluno.nome }}</h5>
+                        <p style="margin-left: 1%;">{{ i.pedidos }}</p>
+                        <p style="margin-left: auto;">R$ {{ i.valor }}</p>
+                        <p style="margin-left: 1%;">{{ i.data }}</p>
+                    </div> 
+                {% endif %}                 
+            {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Page Layout here -->
+    <div class="row" style="margin-bottom: 0px;">
+
+        <!-- aba do aluno -->
+        <div class="col l2 m3 grey lighten-2 hide-on-small-only" style="position: fixed;height: 94%;padding: 10;">
+            <div style="position: relative;height: 99%;" class="grey lighten-2">
+                <form action="aluno" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <label for="foto_alun">
+                        <div class="square img_input">
+                            <img src="{{ aluno.imagem.url }}" alt="" style="position:absolute; width:100%; height:100%; border-radius:50%; object-fit:contain; background-color:white;">
+                            <i class="material-icons large img_img_input">insert_photo</i>
+                        </div>
+                    </label>
+                    <input type="file" name="foto_aluno" id="foto_alun" onchange="form.submit()" accept=".png, .jpg, .jpeg" style="display: none;">
+                </form>
+                <h3 class="center" style="word-wrap: break-word;">{{ aluno.nome }}</h3>
+                <!-- <h4 id="aluno_dinheiro" class="center">R$ {{ aluno.dinheiro }}</h4> -->
+                <div id="mensagens" class="row s12">
+                    {% for i in mensagens reversed %}
+                        <div class="card" style="vertical-align: sub;margin: 3%;">
+                            <div class="card-content" style="padding: 15;position: inherit;">
+                                <p style="word-wrap: break-word;">{{ i.texto }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+  
+        <!-- itens da cantina -->
+        <div class="col l10 offset-l2 m9 offset-m3 grey lighten-5" style="height: 100%;">
+            <!-- barra de pesquisa -->
+            <nav style="margin-top: 1%;margin-bottom: 1%;">
+                <div class="nav-wrapper amber lighten-2">
+                    <div class="input-field">
+                        <input id="search" onkeyup="pesquisa()" autocomplete="off" type="search" required>
+                        <label class="label-icon" for="search"><i class="material-icons">search</i></label>
+                    </div>
+                </div>
+            </nav>
+
+            <ul id="myUL">
+            {% for i in itens|get_sort:'nome' %}
+                <li>
+                    <div class="col l2 m3 s6">
+                        <div class="row l2 m3 s6" style="margin-bottom: 0;">
+                            <div class="card" style="margin-right: 5%;margin-left: 5%;">
+                                <div class="card-image">
+                                    <img src="{{ i.imagem.url }}" style="height: 150px;object-fit: cover;">
+                                </div>
+                                <div class="card-content" style="padding-bottom: 12;">
+                                    <h4 class="center truncate" style="margin-bottom: 5%;margin-top: 0px;font-size: 200%;">{{ i.nome }}</h4>
+                                    <div class="valign-wrapper" style="display: inline-flex;">
+                                        <h4 style="margin-bottom: 0px;margin-top: 0px;font-size: 200%;">R$ {{ i.preco }}</h4>
+                                        <input id="{{ i.id }}" class="right" oninput="pedidos({{ i.id }}, this.value)" onkeydown="return false" type="number" min="0" max="5"  value="0" autocomplete="off" style="width: 20%; text-align: center; border-bottom: none; box-shadow: none; background-color: #f7f7f7; margin-left: auto;margin-bottom: 0;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+            </ul>
+
+        </div>
+  
+    </div>
+    <script>
+        /*console.log()*/
+        $(document).ready(function(){
+            $('.dropdown-trigger').dropdown({
+                coverTrigger: false,
+            });
+            $('.modal').modal();
+        });
+
+        function pesquisa() {
+            var filter, ul, li, a, i, txtValue;
+            filter = document.getElementById("search").value.toUpperCase();
+            ul = document.getElementById("myUL");
+            li = ul.getElementsByTagName("li");
+            for (i = 0; i < li.length; i++) {
+                a = li[i].children[0].children[0].children[0].children[1].getElementsByTagName("h4")[0];
+                txtValue = a.textContent || a.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    li[i].style.display = "";
+                } else {
+                    li[i].style.display = "none";
+                }
+            }
+        }
+
+        var itens = {
+            {% for i in itens %}
+                {{i.id}}:{
+                    nome:'{{ i.nome }}',
+                    preco:'{{ i.preco }}',
+                    imagem:'{{ i.imagem.url }}',
+                    quant:0
+                },
+            {% endfor %}
+        };
+        var total;
+
+        function pedidos (id, val){
+            itens[id]['quant']=Number(val);
+            add_pedidos();
+        }
+
+        function mudar_pedido(id, val) {
+            itens[id]['quant']=Number(val);
+            document.getElementById(id).value=Number(val);
+            add_pedidos();
+        }
+        
+        function add_pedidos() {
+            deletar = document.getElementsByClassName("pedidos_card");
+            while(deletar[0]){
+                deletar[0].parentNode.removeChild(deletar[0]);
+            }            
+
+            total = 0;
+            a = 0;
+            x = document.getElementById('pedidos_cesta');
+
+            for (i in itens){
+                if(itens[i]['quant']){
+                    a += itens[i]['quant'];
+                    total += parseFloat(itens[i]['preco'].replace(',','.')) * itens[i]['quant'];
+                    
+                    x.insertAdjacentHTML("beforeend", 
+                        '<div class="card horizontal pedidos_card" style="width: 48%; display: inline-flex;margin: 1%;">\
+                            <div class="card-image" style="width: 90%; padding-bottom: 50%;">\
+                                <img src='+ itens[i]['imagem'] +' style="position: absolute; min-height: 100%; object-fit: cover; min-width: 100%; height: 100%;">\
+                            </div>\
+                            <div class="card-stacked">\
+                                <div class="card-content center" style="position: relative;">\
+                                    <div>\
+                                        <h4>'+ itens[i]['nome'] +'</h4>\
+                                    </div>\
+                                    <div>\
+                                        <h4 style="position: absolute;bottom: 0;left: 0;">R$ '+ itens[i]['preco'] +'</h4>\
+                                        <select onchange="mudar_pedido('+ i +', this.value)" style="display: block; width: 30%; font-size: 190%; position: absolute;bottom: 5%;right: 7%;text-align: center;">\
+                                            {% for ii in 6|get_range %}\
+                                            <option value="{{ ii }}" '+ ({{ ii }} == itens[i]['quant'] ? 'selected' : '') +'> {{ ii }} </option>\
+                                            {% endfor %}\
+                                        </select>\
+                                    </div>\
+                                </div>\
+                            </div>\
+                        </div>'
+                    );
+                }
+            }
+
+            $('#cesta').text(a);
+            if (a != 0)
+                {document.getElementById("pedidos_vazio").style.display='none',
+                document.getElementById("pedidos_confirmar").style.display='',
+                $('#total_erro').text('')}
+            else
+                {document.getElementById("pedidos_vazio").style.display='',
+                document.getElementById("pedidos_confirmar").style.display='none',
+                $('#total_erro').text('')}
+
+            if(total)
+                {$('#pedidos_total').text('R$ '+String(total.toFixed(2)).replace('.',','))}
+            else
+                {$('#pedidos_total').text('')}
+        }
+
+        function env_pedido(){
+            /*if (parseFloat(document.getElementById('aluno_dinheiro').innerHTML.replace(',','.').replace('R$','')) < total){
+                $('#total_erro').text('Não há fundos suficientes');
+                return;
+            }
+            else{*/
+            ped_itm=[];
+            for (i in itens){
+                if(itens[i]['quant']){
+                    ped_itm.push(itens[i]['nome']+': '+itens[i]['quant']);
+                }
+            }
+            document.getElementById('pedidos_form_nomes').value= ped_itm.join(", ");
+            document.getElementById('pedidos_form_total').value= total;
+            document.getElementById('pedidos_form').submit();
+            /*}*/
+        }
+
+        if (document.getElementById('meus_pedidos_itens').childElementCount==0){
+            document.getElementById('meus_pedidos_itens').style.display='none';
+        }
+        else{
+            document.getElementById('meus_pedidos_nada').style.display='none';
+        }
+    </script>
+{% endblock %}
