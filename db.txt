@@ -1,0 +1,31 @@
+Escola:
+	nome -u
+	email -u
+	senha
+	foto
+	
+Aluno:
+	escola -fk
+	nome
+	email -u
+	senha
+	dinheiro
+	foto
+	
+Itens:
+	escola -fk
+	nome
+	preço
+	foto
+	
+Mensagens:
+	escola -fk
+	mensagem
+	tipo
+	data
+	
+Pedidos:
+	escola -fk
+	itens
+	data
+	entregue
