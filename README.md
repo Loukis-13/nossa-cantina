@@ -9,7 +9,7 @@ docker compose up
 # ou, caso você use podman
 podman-compose up
 ```
-E acesse [0.0.0.0:8000](0.0.0.0:8000).  
+E acesse [0.0.0.0:8000](http://0.0.0.0:8000).  
 
 ## Como usar
 * Crie uma conta de escola;
